@@ -4,6 +4,7 @@ from pygments.styles import get_all_styles
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
 from pygments import highlight
+from .tasks import reverse
 
 
 # Create your models here.
@@ -24,6 +25,7 @@ class Snippet(models.Model):
     owner = models.ForeignKey('auth.User', related_name='snippets', on_delete=models.CASCADE, null=True, blank=False)
     highlighted = models.TextField(null=True, blank=False)
 
+
     class Meta:
         ordering = ['created']
 
@@ -38,5 +40,6 @@ class Snippet(models.Model):
         formatter = HtmlFormatter(style=self.style, linenos=linenos,
                                   full=True, **options)
         self.highlighted = highlight(self.code, lexer, formatter)
+        reverse.delay('athira')
         super().save(*args, **kwargs)
 
